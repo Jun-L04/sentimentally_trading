@@ -57,7 +57,8 @@ for news_item in google_news:
     label = 1 if agg_excess_return_3 > 0 else 0
 
     # make training data
-    training_data.append({'headline': headline, 'label': label})
+    training_data.append(
+        {'headline': headline, 'label': label, 'date': news_date})
 
 # export training data
 with open("training_data.json", "w") as json_file:
