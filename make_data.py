@@ -4,9 +4,9 @@ from datetime import datetime
 from pandas.tseries.offsets import BDay
 
 # stock returns data
-goog = pd.read_csv("stock_returns.csv")
+goog = pd.read_csv("stock_returns_training.csv")
 
-#print(goog.columns)
+print(goog.columns)
 
 # news data
 with open("google_news.json", "r") as json_file:
@@ -29,32 +29,32 @@ for news_item in google_news:
         next_business_day += BDay(1)
     next_business_day_str = next_business_day.strftime('%Y-%m-%d')
 
-    # opening price on the next business day
-    try:
-        open_price = goog.loc[goog['Date'] ==
-                              next_business_day_str, 'Open'].values[0]
-    except IndexError:
-        # exception data not found
-        print(
-            f"Skipping news item on {news_date} - opening price not found for {next_business_day_str}")
-        continue
+    # # opening price on the next business day
+    # try:
+    #     open_price = goog.loc[goog['Date'] ==
+    #                           next_business_day_str, 'Open'].values[0]
+    # except IndexError:
+    #     # exception data not found
+    #     print(
+    #         f"Skipping news item on {news_date} - opening price not found for {next_business_day_str}")
+    #     continue
 
     # the next business day available after at least 3 days
     three_days_after = next_business_day + BDay(3)
     three_days_after_str = three_days_after.strftime('%Y-%m-%d')
 
-    # closing price three business days after news press
+    # aggregated 3 day return price three business days after news press
     try:
-        close_price = goog.loc[goog['Date'] ==
-                               three_days_after_str, 'Close'].values[0]
+        agg_excess_return_3 = goog.loc[goog['Date'] ==
+                                       three_days_after_str, '3-Day Excess Return'].values[0]
     except IndexError:
         # exception data not found
         print(
-            f"Skipping news item on {news_date} - closing price not found for {three_days_after_str}")
+            f"Skipping news item on {news_date} - Aggregated 3 Day Excess Return Not Found on {three_days_after_str}")
         continue
 
     # wether the stock price went up or down
-    label = 1 if close_price > open_price else 0
+    label = 1 if agg_excess_return_3 > 0 else 0
 
     # make training data
     training_data.append({'headline': headline, 'label': label})
