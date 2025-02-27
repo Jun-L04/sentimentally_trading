@@ -4,12 +4,12 @@ from datetime import datetime
 from pandas.tseries.offsets import BDay
 
 # stock returns data
-goog = pd.read_csv("stock_returns_training.csv")
+goog = pd.read_csv("stock_returns.csv")
 
 print(goog.columns)
 
 # news data
-with open("google_news.json", "r") as json_file:
+with open("test_news.json", "r") as json_file:
     google_news = json.load(json_file)
     print(len(google_news))
 
